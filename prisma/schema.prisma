@@ -1,0 +1,210 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_URL")
+}
+
+model Session {
+  id        String   @id
+  sid       String   @unique
+  data      String
+  expiresAt   DateTime
+}
+
+model categorias {
+  id_categoria String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  nome         String? @db.VarChar(255)
+  item         item[]
+}
+
+model cd {
+  id_cd                                                        String                   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  id_admin                                                     String?                  @db.Uuid
+  descricao                                                    String?                  @db.VarChar(255)
+  endereco                                                     String?                  @db.VarChar(255)
+  nome                                                         String?                  @db.VarChar(255)
+  capacidade_armazenamento                                     String?                  @db.VarChar(255)
+  usuario_cd_id_adminTousuario                                 usuario?                 @relation("cd_id_adminTousuario", fields: [id_admin], references: [id_usuario], onDelete: NoAction, onUpdate: NoAction)
+  item_estoque                                                 item_estoque[]
+  localizacao_estoque                                          localizacao_estoque[]
+  ordem_de_transferencia_ordem_de_transferencia_cd_destinoTocd ordem_de_transferencia[] @relation("ordem_de_transferencia_cd_destinoTocd")
+  ordem_de_transferencia_ordem_de_transferencia_cd_origemTocd  ordem_de_transferencia[] @relation("ordem_de_transferencia_cd_origemTocd")
+  usuario_usuario_id_cdTocd                                    usuario[]                @relation("usuario_id_cdTocd")
+  usuario_cd                                                   usuario_cd[]
+}
+
+model demanda {
+  id_demanda                                                                         String                   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  id_coordenador                                                                     String?                  @db.Uuid
+  prioridade                                                                         String?                  @db.VarChar(255)
+  id_item                                                                            String?                  @db.Uuid
+  quantidade                                                                         Int?
+  id_ponto_entrega                                                                   String?                  @db.Uuid
+  created_at                                                                         DateTime?                @db.Date
+  updated_at                                                                         DateTime?                @db.Date
+  usuario                                                                            usuario?                 @relation(fields: [id_coordenador], references: [id_usuario], onDelete: NoAction, onUpdate: NoAction)
+  item                                                                               item?                    @relation(fields: [id_item], references: [id_item], onDelete: NoAction, onUpdate: NoAction)
+  ponto_entrega                                                                      ponto_entrega?           @relation(fields: [id_ponto_entrega], references: [id_ponto_entrega], onDelete: NoAction, onUpdate: NoAction)
+  entrega_demanda                                                                    entrega_demanda[]
+  ordem_de_compra                                                                    ordem_de_compra[]
+  ordem_de_transferencia_ordem_de_transferencia_id_demanda_de_transferenciaTodemanda ordem_de_transferencia[] @relation("ordem_de_transferencia_id_demanda_de_transferenciaTodemanda")
+  ordem_de_transferencia_ordem_de_transferencia_id_demandaTodemanda                  ordem_de_transferencia[] @relation("ordem_de_transferencia_id_demandaTodemanda")
+}
+
+model entrega_demanda {
+  id_entrega String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  id_viagem  String?   @db.Uuid
+  id_demanda String?   @db.Uuid
+  id_gestor  String?   @db.Uuid
+  status     String?   @db.VarChar(255)
+  observacao String?   @db.VarChar(255)
+  created_at DateTime? @db.Date
+  updated_at DateTime? @db.Date
+  demanda    demanda?  @relation(fields: [id_demanda], references: [id_demanda], onDelete: NoAction, onUpdate: NoAction)
+  usuario    usuario?  @relation(fields: [id_gestor], references: [id_usuario], onDelete: NoAction, onUpdate: NoAction)
+  viagem     viagem?   @relation(fields: [id_viagem], references: [id_viagem], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model item {
+  id_item         String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  nome            String?           @db.VarChar(255)
+  unidade_medida  String?           @db.VarChar(255)
+  created_at      DateTime?         @db.Date
+  updated_at      DateTime?         @db.Date
+  id_categoria    String?           @db.Uuid
+  demanda         demanda[]
+  categorias      categorias?       @relation(fields: [id_categoria], references: [id_categoria], onDelete: NoAction, onUpdate: NoAction)
+  item_estoque    item_estoque[]
+  ordem_de_compra ordem_de_compra[]
+}
+
+model item_estoque {
+  id_item_estoque     String               @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  id_item             String?              @db.Uuid
+  tipo_operacao       String?              @db.VarChar(255)
+  id_localizacao      String?              @db.Uuid
+  quantidade          Int?
+  id_estoque          String?              @db.Uuid
+  validade            DateTime?            @db.Time(6)
+  id_origem           String?              @db.Uuid
+  cd                  cd?                  @relation(fields: [id_estoque], references: [id_cd], onDelete: NoAction, onUpdate: NoAction)
+  item                item?                @relation(fields: [id_item], references: [id_item], onDelete: NoAction, onUpdate: NoAction)
+  localizacao_estoque localizacao_estoque? @relation(fields: [id_localizacao], references: [id_localizacao], onDelete: NoAction, onUpdate: NoAction)
+  origem              origem?              @relation(fields: [id_origem], references: [id_origem], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model localizacao_estoque {
+  id_localizacao String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  id_estoque     String?        @db.Uuid
+  nome           String?        @db.VarChar(255)
+  item_estoque   item_estoque[]
+  cd             cd?            @relation(fields: [id_estoque], references: [id_cd], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model migrations {
+  id        Int    @id(map: "PK_8c82d7f526340ab734260ea46be") @default(autoincrement())
+  timestamp BigInt
+  name      String @db.VarChar
+}
+
+model ordem_de_compra {
+  id_ordem_de_compra String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  id_demanda         String?   @db.Uuid
+  id_item            String?   @db.Uuid
+  nome               String?   @db.VarChar(255)
+  status             String?   @db.VarChar(255)
+  created_at         DateTime? @db.Date
+  updated_at         DateTime? @db.Date
+  demanda            demanda?  @relation(fields: [id_demanda], references: [id_demanda], onDelete: NoAction, onUpdate: NoAction)
+  item               item?     @relation(fields: [id_item], references: [id_item], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model ordem_de_transferencia {
+  id_ordem_de_transferencia                                           String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  id_demanda                                                          String?   @db.Uuid
+  id_demanda_de_transferencia                                         String?   @db.Uuid
+  cd_origem                                                           String?   @db.Uuid
+  cd_destino                                                          String?   @db.Uuid
+  status                                                              String?   @db.VarChar(255)
+  created_at                                                          DateTime? @db.Date
+  updated_at                                                          DateTime? @db.Date
+  cd_ordem_de_transferencia_cd_destinoTocd                            cd?       @relation("ordem_de_transferencia_cd_destinoTocd", fields: [cd_destino], references: [id_cd], onDelete: NoAction, onUpdate: NoAction)
+  cd_ordem_de_transferencia_cd_origemTocd                             cd?       @relation("ordem_de_transferencia_cd_origemTocd", fields: [cd_origem], references: [id_cd], onDelete: NoAction, onUpdate: NoAction)
+  demanda_ordem_de_transferencia_id_demanda_de_transferenciaTodemanda demanda?  @relation("ordem_de_transferencia_id_demanda_de_transferenciaTodemanda", fields: [id_demanda_de_transferencia], references: [id_demanda], onDelete: NoAction, onUpdate: NoAction)
+  demanda_ordem_de_transferencia_id_demandaTodemanda                  demanda?  @relation("ordem_de_transferencia_id_demandaTodemanda", fields: [id_demanda], references: [id_demanda], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model origem {
+  id_origem    String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  nome         String?        @db.VarChar(255)
+  cpf_cnpj     String?        @db.VarChar(255)
+  categoria    String?        @db.VarChar(255)
+  item_estoque item_estoque[]
+}
+
+model pacote {
+  id_pacote        String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  id_viagem        String?        @db.Uuid
+  id_ponto_entrega String?        @db.Uuid
+  codigo           String?        @db.VarChar(255)
+  ponto_entrega    ponto_entrega? @relation(fields: [id_ponto_entrega], references: [id_ponto_entrega], onDelete: NoAction, onUpdate: NoAction)
+  viagem           viagem?        @relation(fields: [id_viagem], references: [id_viagem], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model ponto_entrega {
+  id_ponto_entrega String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  endereco         String?   @db.VarChar(255)
+  responsavel      String?   @db.VarChar(255)
+  telefone         String?   @db.VarChar(255)
+  created_at       DateTime? @db.Date
+  updated_at       DateTime? @db.Date
+  demanda          demanda[]
+  pacote           pacote[]
+}
+
+model user {
+  id           String    @id(map: "PK_cace4a159ff9f2512dd42373760") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  createdAt    DateTime  @default(now()) @db.Timestamp(6)
+  updatedAt    DateTime  @default(now()) @db.Timestamp(6)
+  deletedAt    DateTime? @db.Timestamp(6)
+  username     String    @unique(map: "UQ_78a916df40e02a9deb1c4b75edb") @db.VarChar(20)
+  email        String    @unique(map: "UQ_e12875dfb3b1d92d7d7c5377e22") @db.VarChar(255)
+  hashPassword String    @db.VarChar
+  salt         String    @db.VarChar
+}
+
+model usuario {
+  id_usuario              String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tipo_usuario            String?           @db.VarChar(255)
+  nome                    String?           @db.VarChar(255)
+  email                   String?           @db.VarChar(255)
+  senha                   String?           @db.VarChar(255)
+  id_cd                   String?           @db.Uuid
+  salt                    String?           @db.VarChar
+  cd_cd_id_adminTousuario cd[]              @relation("cd_id_adminTousuario")
+  demanda                 demanda[]
+  entrega_demanda         entrega_demanda[]
+  cd_usuario_id_cdTocd    cd?               @relation("usuario_id_cdTocd", fields: [id_cd], references: [id_cd], onDelete: NoAction, onUpdate: NoAction)
+  usuario_cd              usuario_cd[]
+}
+
+model usuario_cd {
+  id_usuario    String?  @db.Uuid
+  id_cd         String?  @db.Uuid
+  id_vinculo_cd String   @id(map: "usuario_cd_pk") @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  cd            cd?      @relation(fields: [id_cd], references: [id_cd], onUpdate: NoAction, map: "usuario_cd_cd_fk")
+  usuario       usuario? @relation(fields: [id_usuario], references: [id_usuario], onUpdate: NoAction, map: "usuario_cd_usuario_fk")
+}
+
+model viagem {
+  id_viagem        String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  placa_transporte String?           @db.VarChar(255)
+  motorista        String?           @db.VarChar(255)
+  created_at       DateTime?         @db.Date
+  updated_at       DateTime?         @db.Date
+  entrega_demanda  entrega_demanda[]
+  pacote           pacote[]
+}

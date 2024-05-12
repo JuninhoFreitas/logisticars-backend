@@ -1,6 +1,6 @@
-import mainDB from "../lib/prisma";
-import { setToken, checkToken ,setToken, passwordEnc} from "../lib/utils";
-import { SESSIONS } from "../memory/memories";
+import mainDB from "../lib/prisma.js";
+import { setToken, checkToken , passwordEnc} from "../lib/utils.js";
+import { SESSIONS } from "../memory/memories.js";
 
 class Users {
     static async login(req, res) {
