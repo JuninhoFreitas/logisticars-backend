@@ -1,20 +1,20 @@
-import bcrypt from 'bcryptjs';
-import prisma from '../src/lib/prisma.js';
-import {v4} from 'uuid';
+import bcrypt from "bcryptjs";
+import prisma from "../src/lib/prisma.js";
+
 async function main() {
   await prisma.usuario.create({
     data: {
-      email: 'alice@prisma.io',
-      nome: 'Alice',
-      senha: bcrypt.hashSync('password', 8),
+      email: "alice@prisma.io",
+      nome: "Alice",
+      senha: bcrypt.hashSync("password", 8),
     },
   });
 
   await prisma.usuario.create({
     data: {
-      email: 'bob@prisma.io',
-      nome: 'Bob',
-      senha: bcrypt.hashSync('password', 8),
+      email: "bob@prisma.io",
+      nome: "Bob",
+      senha: bcrypt.hashSync("password", 8),
     },
   });
 }
