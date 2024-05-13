@@ -165,6 +165,20 @@ model ponto_entrega {
   pacote           pacote[]
 }
 
+<<<<<<< HEAD
+=======
+model user {
+  id           String    @id(map: "PK_cace4a159ff9f2512dd42373760") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  createdAt    DateTime  @default(now()) @db.Timestamp(6)
+  updatedAt    DateTime  @default(now()) @db.Timestamp(6)
+  deletedAt    DateTime? @db.Timestamp(6)
+  username     String    @unique(map: "UQ_78a916df40e02a9deb1c4b75edb") @db.VarChar(20)
+  email        String    @unique(map: "UQ_e12875dfb3b1d92d7d7c5377e22") @db.VarChar(255)
+  hashPassword String    @db.VarChar
+  salt         String    @db.VarChar
+}
+
+>>>>>>> main
 model usuario {
   id_usuario              String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   tipo_usuario            String?           @db.VarChar(255)
@@ -172,6 +186,10 @@ model usuario {
   email                   String?           @unique @db.VarChar(255)
   senha                   String?           @db.VarChar(255)
   id_cd                   String?           @db.Uuid
+<<<<<<< HEAD
+=======
+  salt                    String?           @db.VarChar
+>>>>>>> main
   cd_usuario_id_cdTocd    cd?               @relation("usuario_id_cdTocd", fields: [id_cd], references: [id_cd], onDelete: NoAction, onUpdate: NoAction)
   cd_cd_id_adminTousuario cd[]              @relation("cd_id_adminTousuario")
   demanda                 demanda[]
