@@ -5,13 +5,9 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-<<<<<<< HEAD
     "dev": "npx nodemon src/api/server.js",
     "lint": "eslint . --ext .js",
     "lint:fix": "eslint . --ext .js --fix"
-=======
-    "dev": "npx nodemon src/api/server.js"
->>>>>>> main
   },
   "prisma": {
     "seed": "node prisma/seed.ts"
