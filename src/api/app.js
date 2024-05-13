@@ -1,8 +1,16 @@
+<<<<<<< HEAD
+import express from "express";
+import swaggerJsdoc from "swagger-jsdoc";
+import swaggerUiExpress from "swagger-ui-express";
+import errorMiddleware from "../middlewares/error.js";
+import routes from "./routes.js";
+=======
 import express from 'express';
 import errorMiddleware from '../middlewares/error.js';
 import routes from './routes.js';
 import swaggerJsdoc from 'swagger-jsdoc';
 import swaggerUiExpress from 'swagger-ui-express';
+>>>>>>> main
 
 const app = express();
 const options = {
@@ -40,7 +48,11 @@ app.use(
     explorer: true,
     customCssUrl:
       "https://cdn.jsdelivr.net/npm/swagger-ui-themes@3.0.0/themes/3.x/theme-newspaper.css",
+<<<<<<< HEAD
+  }),
+=======
   })
+>>>>>>> main
 );
 
 app.use(express.json()).use(routes).use(errorMiddleware);
