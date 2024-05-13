@@ -3,7 +3,7 @@ import prisma from "../lib/prisma.js";
 
 class UserController {
   async getById(req, res, next) {
-    console.log("payload", res.locals.payload); // just to see the payload
+    console.log("Caller", res.locals.payload); // just to see the payload
 
     try {
       const user = await prisma.usuario.findUnique({
@@ -16,7 +16,7 @@ class UserController {
         });
       return res
         .status(StatusCodes.OK)
-        .json({ nome: user.nome, email: user.email });
+        .json({ nome: user.nome, email: user.email, tipo_usuario: user.tipo_usuario });
     } catch (err) {
       console.error(err);
       return next({

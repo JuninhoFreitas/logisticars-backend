@@ -32,7 +32,7 @@ class AuthController {
   }
 
   async register(req, res, next) {
-    const { email, senha } = req.body;
+    const { email, senha, nome, tipo_usuario } = req.body;
 
     const user = await prisma.usuario.findUnique({ where: { email } });
 
@@ -47,7 +47,7 @@ class AuthController {
 
     try {
       const { id_usuario } = await prisma.usuario.create({
-        data: { email, senha: hashedPassword },
+        data: { email, senha: hashedPassword, nome, tipo_usuario },
       });
       return res.status(StatusCodes.CREATED).send({ id_usuario });
     } catch (err) {

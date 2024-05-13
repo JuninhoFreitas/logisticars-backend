@@ -6,23 +6,24 @@
 
 - [Node.js](https://nodejs.org/en/)
 - [pnpm](https://pnpm.io/en/)
-- [MySQL](https://www.mysql.com/en/) v5.6, v5.7 or 8 👉 You can use [docker](https://www.docker.com/en/) to run MySQL
+- [Docker](https://docker.io)
 
 ### Setup
 
-🙊 Configure your MySQL database and JWT secret in `.env` file:
+🙊 Configure your Postgres database and JWT secret in `.env` file(copy the `.env.example`):
 
-```env
-DATABASE_URL="mysql://YOUR_USER:YOUR_PASSWORD@HOST:PORT/SOME_DATABASE"
-JWT_SECRET_KEY=secret
-```
 
-🚀 Install dependencies:
+🚀 Running:
 
 ```bash
+docker compose up -d
+
 pnpm i
 
-npx prisma migrate dev
+npx prisma db push
+
+pnpm dev
+
 ```
 
 Enjoy! 🙋
