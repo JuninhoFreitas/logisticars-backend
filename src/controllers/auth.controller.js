@@ -7,13 +7,6 @@ class AuthController {
   async authenticate(req, res, next) {
     const { email, senha } = req.body;
 
-    if (!email || !senha) {
-      return next({
-        status: StatusCodes.BAD_REQUEST,
-        message: 'Faltam alguns campos',
-      });
-    }
-
     const user = await prisma.usuario.findUnique({ where: { email } });
 
     if (!user) {
@@ -23,7 +16,7 @@ class AuthController {
       });
     }
 
-    const isValidPassword = await bcrypt.compare(senha, user.senha);
+    const isValidPassword = bcrypt.compare(senha, user.senha);
 
     if (!isValidPassword) {
       return next({
@@ -38,13 +31,6 @@ class AuthController {
   }
   async register(req, res, next) {
     const { email, senha } = req.body;
-
-    if (!email || !senha) {
-      return next({
-        status: StatusCodes.BAD_REQUEST,
-        message: 'Some required fields are missing',
-      });
-    }
 
     const user = await prisma.usuario.findUnique({ where: { email } });
 

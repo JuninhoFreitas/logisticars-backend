@@ -172,7 +172,6 @@ model usuario {
   email                   String?           @unique @db.VarChar(255)
   senha                   String?           @db.VarChar(255)
   id_cd                   String?           @db.Uuid
-  salt                    String?           @db.VarChar
   cd_usuario_id_cdTocd    cd?               @relation("usuario_id_cdTocd", fields: [id_cd], references: [id_cd], onDelete: NoAction, onUpdate: NoAction)
   cd_cd_id_adminTousuario cd[]              @relation("cd_id_adminTousuario")
   demanda                 demanda[]
